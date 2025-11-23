@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" style="background-color: white; color: black;">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline' %%CSP_SOURCE%%; script-src 'nonce-%%NONCE%%' https:;">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  %%CSS_LINKS%%
+  <title>Markdown-it Preview</title>
+</head>
+<body>
+  <div id="content"></div>
+
+  <script nonce="%%NONCE%%" src="%%MD_CDN%%"></script>
+  %%NPM_SCRIPTS%%
+
+  <script nonce="%%NONCE%%">
+  // Acquire the VS Code API once and reuse it. Do not call acquireVsCodeApi multiple times.
+  const vscodeApi = (typeof acquireVsCodeApi === 'function') ? acquireVsCodeApi() : null;
+  // Diagnostics: report presence of known globals back to the extension
+  (function(){
+    try {
+      const names = [
+        'markdownit',
+        'markdownitContainer',
+        'markdownit_container',
+        'markdown-it-container',
+        'markdownitContainer_default',
+        'markdownit_container_default'
+      ];
+      const globals = {};
+      for (const n of names) { globals[n] = !!window[n]; }
+      if (vscodeApi) { vscodeApi.postMessage({ type: 'globals', globals }); }
+      console.log('diagnostics globals', globals);
+    } catch (e) {
+      try { if (vscodeApi) vscodeApi.postMessage({ type: 'log', level: 'error', message: String(e) }); } catch (_) {}
+      console.error(e);
+    }
+  })();
+  </script>
+
+  %%EXTRA_SCRIPTS%%
+  %%INITIALIZER_SCRIPT%%
+
+  <script nonce="%%NONCE%%">
+  (function(){
+    const configOptions = JSON.parse('%%OPTIONS%%');
+    const md = window.markdownit ? window.markdownit(configOptions) : null;
+
+    function renderText(text) {
+      try {
+        if (!md) {
+          document.getElementById('content').innerText = 'markdown-it not available';
+          if (vscodeApi) vscodeApi.postMessage({ type: 'renderError', error: 'markdown-it not available' });
+          return;
+        }
+        // call user initializer if provided. Pass isExtension=true when called from the extension.
+        if (typeof window.initMarkdownIt === 'function') {
+          try { window.initMarkdownIt(md, true); } catch (e) { console.error(e); }
+        }
+        const html = md.render(text);
+        document.getElementById('content').innerHTML = html;
+        if (vscodeApi) vscodeApi.postMessage({ type: 'rendered', html: html.slice(0, 10000) });
+        } catch (e) {
+        console.error('renderText error', e);
+        if (vscodeApi) vscodeApi.postMessage({ type: 'renderError', error: String(e) });
+      }
+    }
+
+    // initial render
+    renderText(JSON.parse('%%INITIAL_TEXT%%'));
+    // notify extension that webview is ready to receive updates
+    try { if (vscodeApi) vscodeApi.postMessage({ type: 'ready' }); } catch (e) { console.error('webview: ready postMessage failed', e); }
+
+    // listen for updates
+    window.addEventListener('message', event => {
+      const msg = event.data;
+      console.log('webview: received message', msg);
+      if (msg && msg.type === 'update') {
+        try {
+          renderText(msg.text);
+          console.log('webview: renderText completed');
+        } catch (e) {
+          console.error('webview: renderText error', e);
+        }
+      }
+    });
+  })();
+  </script>
+</body>
+</html>

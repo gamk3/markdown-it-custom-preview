@@ -1,0 +1,11 @@
+{
+  "initializer": "init.js",
+  "css": ["style.css"],
+  "js": ["client-helper.js"],
+  "npmUrls": ["https://cdn.jsdelivr.net/npm/markdown-it-container@3.0.0/dist/markdown-it-container.min.js"],
+  "options": {
+    "html": true,
+    "linkify": true
+  },
+  "fileExtensions": [".md", ".mdown"]
+}
