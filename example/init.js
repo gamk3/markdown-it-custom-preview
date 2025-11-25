@@ -4,8 +4,6 @@
 // This is where you can add plugins etc...
 // Because this is just some file in your project, you can reuse this cofinguration
 // for your actual code that renders markdown!
-function initMarkdownIt(md, isExtension) {
+export function initMarkdownIt(md, isExtension) {
   md.use(markdownitContainer, "info");
-};
-
-module.exports = {initMarkdownIt};
+}
