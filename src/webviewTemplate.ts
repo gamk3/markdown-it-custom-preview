@@ -42,6 +42,14 @@ export function getWebviewContent(webview: vscode.Webview, baseUri: vscode.Uri, 
         }
     }
 
+    // moduleUrls (load as ES modules)
+    let moduleScripts = '';
+    if (Array.isArray(config.moduleUrls)) {
+        for (const url of config.moduleUrls) {
+            moduleScripts += `<script type="module" nonce="${nonce}" src="${url}"></script>\n`;
+        }
+    }
+
     // extra local JS
     let extraScripts = '';
     if (Array.isArray(config.js)) {
@@ -80,6 +88,7 @@ export function getWebviewContent(webview: vscode.Webview, baseUri: vscode.Uri, 
         .replace(/%%MD_CDN%%/g, mdCdn)
         .replace(/%%CSS_LINKS%%/g, cssLinks)
         .replace(/%%NPM_SCRIPTS%%/g, npmScripts)
+        .replace(/%%MODULE_SCRIPTS%%/g, moduleScripts)
         .replace(/%%EXTRA_SCRIPTS%%/g, extraScripts)
         .replace(/%%INITIALIZER_SCRIPT%%/g, initializerScriptTag)
         .replace(/%%OPTIONS%%/g, optionsEscaped)

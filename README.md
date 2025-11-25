@@ -30,6 +30,9 @@ Create `.vscode/markdown-it-custom-preview.json` in your workspace root. Example
 	"npmUrls": [
 		"https://cdn.jsdelivr.net/npm/markdown-it-container/dist/markdown-it-container.min.js"
 	],
+	"moduleUrls": [
+		"https://cdn.jsdelivr.net/npm/some-es-module-plugin/dist/plugin.esm.js"
+	],
 	"initializer": "example/init.js",
 	"options": {
 		"html": true,
