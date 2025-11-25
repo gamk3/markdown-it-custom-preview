@@ -2,6 +2,10 @@
   "name": "markdown-it-custom-preview",
   "displayName": "markdown-it-custom-preview",
   "description": "Preview your markdown with all of your custom markdown-it plugins applied",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gamk3/markdown-it-custom-preview"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.106.0"
