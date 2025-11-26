@@ -33,7 +33,8 @@ export function activate(context: vscode.ExtensionContext) {
         const defaultConfig = {
             fileExtensions: ['.md', '.markdown'],
             css: [],
-            js: [],
+                cssUrls: [],
+                js: [],
             npmUrls: [],
             moduleUrls: [],
             initializer: 'init.js',

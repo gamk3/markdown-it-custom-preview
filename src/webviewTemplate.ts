@@ -33,6 +33,15 @@ export function getWebviewContent(webview: vscode.Webview, baseUri: vscode.Uri, 
             } catch (e) { }
         }
     }
+    // remote CSS URLs
+    if (Array.isArray(config.cssUrls)) {
+        for (const url of config.cssUrls) {
+            try {
+                // Allow loading from remote https URLs
+                cssLinks += `<link rel="stylesheet" href="${url}">\n`;
+            } catch (e) { }
+        }
+    }
 
     // npmUrls
     let npmScripts = '';

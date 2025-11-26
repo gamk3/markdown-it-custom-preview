@@ -14,8 +14,8 @@ This extension was designed to be used in places where you have both markdown an
 
 ## Usage
 
-- Create a file at using the command `Markdonw-it Custom Preview: `. This creates `.vscode/markdown-it-custom-preview.json` which you can modify to configure your preview (see the Configuration section).
-- Run the command: `Markdown-it Custom Preview: Open Preview`. This will open the preview window.
+- Create a file at using the command `Create Markdown-it Custom Preview Config`. This creates `.vscode/markdown-it-custom-preview.json` which you can modify to configure your preview (see the Configuration section).
+- Run the command: `Open Markdown-it Custom Preview`. This will open the preview window.
 - The extension will open a single preview pane that follows the active editor. Edit a markdown file and the preview updates live.
 
 ## Configuration
@@ -25,7 +25,8 @@ Create `.vscode/markdown-it-custom-preview.json` in your workspace root. Example
 ```
 {
 	"fileExtensions": [".md", ".markdown"],
-	"css": ["example/style.css"],
+ 	"css": ["example/style.css"],
+ 	"cssUrls": ["https://cdn.example.com/example-style.css"],
 	"js": ["example/client-helper.js"],
 	"npmUrls": [
 		"https://cdn.jsdelivr.net/npm/markdown-it-container/dist/markdown-it-container.min.js"
@@ -43,6 +44,8 @@ Create `.vscode/markdown-it-custom-preview.json` in your workspace root. Example
 
 - `fileExtension` / `fileExtensions`: strings or array of strings specifying file extensions that should be considered Markdown for this preview. Defaults to `['.md', '.markdown']`.
 - `css`: array of local CSS file paths (relative to the workspace root) to include in the preview. To be used for custom styling.
+ - `cssUrls`: array of remote CSS URLs (HTTPS) to include in the preview. Use this to load styles hosted on CDNs or other sites.
+ - `css`: array of local CSS file paths (relative to the workspace root) to include in the preview. To be used for custom styling.
 - `js`: array of local JS file paths (relative to the workspace root) to include in the preview. To be used for interactivity e.g. collabsible tabs.
 - `npmUrls`: array of CDN URLs to UMD bundles for `markdown-it` plugins (the extension will inject these files into the preview for use by the initializer).
 - `initializer`: path to a local JS initializer file (relative to workspace root) that will be loaded into the webview and called as `window.initMarkdownIt(md, true)`.
