@@ -68,7 +68,12 @@ export function getWebviewContent(webview: vscode.Webview, baseUri: vscode.Uri, 
         try {
             const initUri = vscode.Uri.joinPath(baseUri, config.initializer);
             const webInit = webview.asWebviewUri(initUri);
-            initializerScriptTag = `<script src="${webInit.toString()}" type="module"></script>\n`;
+            const loadAsModule = !!config.loadInitializerAsModule;
+            if (loadAsModule) {
+                initializerScriptTag = `<script type="module" nonce="${nonce}" src="${webInit.toString()}"></script>\n`;
+            } else {
+                initializerScriptTag = `<script src="${webInit.toString()}"></script>\n`;
+            }
         } catch (e) { initializerScriptTag = ''; }
     }
 

@@ -14,9 +14,8 @@
     "Other"
   ],
   "activationEvents": [
-    
-    "onLanguage:markdown",
-    "workspaceContains:.vscode/markdown-it-custom-preview.json"
+    "workspaceContains:.vscode/markdown-it-custom-preview.json",
+    "onCommand:markdown-it-custom-preview.createConfig"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -29,6 +28,11 @@
         "command": "markdown-it-custom-preview.openPreview",
         "title": "Open Markdown-it Custom Preview"
       }
+      ,
+      {
+        "command": "markdown-it-custom-preview.createConfig",
+        "title": "Create Markdown-it Custom Preview Config"
+      }
     ]
     ,"configuration": {
       "type": "object",
@@ -38,6 +42,12 @@
           "type": "boolean",
           "default": false,
           "description": "When enabled, automatically open the Markdown-it Custom Preview when a matching Markdown file is opened. Matching is determined by the nearest `.vscode/markdown-it-custom-preview.json` `fileExtension(s)` setting or the defaults (.md, .markdown)."
+        }
+        ,
+        "markdownItCustomPreview.loadInitializerAsModule": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, the workspace initializer (configured in `.vscode/markdown-it-custom-preview.json`) will be loaded as an ES module (`type=module`). When false the initializer is loaded as a plain script tag."
         }
       }
     }

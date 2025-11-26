@@ -14,7 +14,7 @@ This extension was designed to be used in places where you have both markdown an
 
 ## Usage
 
-- Create a file at `.vscode/markdown-it-custom-preview.json` to configure your preview (see the Configuration section).
+- Create a file at using the command `Markdonw-it Custom Preview: `. This creates `.vscode/markdown-it-custom-preview.json` which you can modify to configure your preview (see the Configuration section).
 - Run the command: `Markdown-it Custom Preview: Open Preview`. This will open the preview window.
 - The extension will open a single preview pane that follows the active editor. Edit a markdown file and the preview updates live.
 

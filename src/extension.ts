@@ -11,6 +11,72 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(disposableHello);
 
+    // Command to create a workspace config file (.vscode/markdown-it-custom-preview.json)
+    const disposableCreateConfig = vscode.commands.registerCommand('markdown-it-custom-preview.createConfig', async () => {
+        const folders = vscode.workspace.workspaceFolders;
+        if (!folders || folders.length === 0) {
+            vscode.window.showInformationMessage('Open a folder or workspace to create the markdown-it preview config.');
+            return;
+        }
+
+        let folder: vscode.WorkspaceFolder | undefined = undefined;
+        if (folders.length === 1) { folder = folders[0]; }
+        else {
+            folder = await vscode.window.showWorkspaceFolderPick();
+            if (!folder) { return; }
+        }
+
+        const configDir = vscode.Uri.joinPath(folder.uri, '.vscode');
+        const configUri = vscode.Uri.joinPath(configDir, 'markdown-it-custom-preview.json');
+
+        // Default example config
+        const defaultConfig = {
+            fileExtensions: ['.md', '.markdown'],
+            css: [],
+            js: [],
+            npmUrls: [],
+            moduleUrls: [],
+            initializer: 'init.js',
+            options: { html: true, linkify: true },
+            loadInitializerAsModule: false
+        };
+
+        try {
+            // ensure .vscode exists
+            try { await vscode.workspace.fs.createDirectory(configDir); } catch (e) { /* ignore */ }
+
+            let writeFile = true;
+            try {
+                // check if file exists
+                const existing = await vscode.workspace.fs.readFile(configUri);
+                const choice = await vscode.window.showWarningMessage('A markdown-it preview config already exists in this workspace.', 'Open', 'Overwrite', 'Cancel');
+                if (choice === 'Open') {
+                    const doc = await vscode.workspace.openTextDocument(configUri);
+                    await vscode.window.showTextDocument(doc, { preview: false });
+                    return;
+                } else if (choice === 'Overwrite') {
+                    writeFile = true;
+                } else {
+                    return;
+                }
+            } catch (e) {
+                // file doesn't exist -> continue to write
+            }
+
+            if (writeFile) {
+                const content = Buffer.from(JSON.stringify(defaultConfig, null, 2), 'utf8');
+                await vscode.workspace.fs.writeFile(configUri, content);
+                const doc = await vscode.workspace.openTextDocument(configUri);
+                await vscode.window.showTextDocument(doc, { preview: false });
+                vscode.window.showInformationMessage('Created markdown-it-custom-preview config at ' + configUri.fsPath);
+            }
+        } catch (err) {
+            console.error('createConfig error', err);
+            vscode.window.showErrorMessage('Failed to create config: ' + String(err));
+        }
+    });
+    context.subscriptions.push(disposableCreateConfig);
+
     // Maintain a single preview panel that follows the active editor.
     type ActivePreview = {
         panel: vscode.WebviewPanel;
